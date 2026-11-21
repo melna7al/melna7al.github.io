@@ -262,6 +262,7 @@
   var ARROW = '<svg class="lk-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>';
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function yt(u){var m=/(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/.exec(String(u||''));return m?'https://i.ytimg.com/vi/'+m[1]+'/hqdefault.jpg':'';}
   function safe(u){ u = String(u || ''); return /^(https?:\/\/|mailto:|\/(?!\/)|#)/i.test(u) ? u : '#'; }
 
   function socials(c){
@@ -281,9 +282,10 @@
     c.links.forEach(function(l){
       if (!l.visible) return;
       var d = Math.min(3 + n, 12); n++;
-      var media = l.logo && l.thumb
-        ? '<span class="lk-media logo"><img src="' + esc(safe(l.thumb)) + '" alt="" loading="lazy" onerror="this.remove()"></span>'
-        : '<span class="lk-media"><span class="ph">' + (PH[l.icon] || PH.play) + '</span>' + (l.thumb ? '<img src="' + esc(safe(l.thumb)) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</span>';
+      var th = l.thumb || yt(l.url);
+      var media = l.logo && th
+        ? '<span class="lk-media logo"><img src="' + esc(safe(th)) + '" alt="" loading="lazy" onerror="this.remove()"></span>'
+        : '<span class="lk-media"><span class="ph">' + (PH[l.icon] || PH.play) + '</span>' + (th ? '<img src="' + esc(safe(th)) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</span>';
       h += '<a class="lk rise" style="--i:' + d + '" href="' + esc(safe(l.url)) + '"' + (l.newTab ? ' target="_blank" rel="noopener"' : '') + '>' + media +
         '<span class="lk-txt"><b>' + esc(l.title) + '</b>' + (l.desc ? '<small>' + esc(l.desc) + '</small>' : '') + '</span>' + ARROW + '</a>';
     });
